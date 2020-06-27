@@ -1,0 +1,104 @@
+<script src="{{ url_for('static',filename='js/vue.min.js') }}"></script>
+<div id="gl-vm-det">
+    <gl-wrapper v-show="!preview_mode" v-for="y_mo in Object.keys(files).sort().reverse()" :y_mo="y_mo"
+                :size="files[y_mo].length">
+        <gl-container v-for="y_mo_file in files[y_mo]" :file="y_mo_file"></gl-container>
+    </gl-wrapper>
+    <gl-viewer v-if="preview_mode">
+        <gl-container :file="vm.viewer_file"></gl-container>
+    </gl-viewer>
+</div>
+<script>
+    /*files={
+            '2020-1':[{},{},],
+            '2019-12':[{},{},],
+            }*/
+    /*去除末位空格*/
+    String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, '');
+    }
+
+    const suffixes = {
+        video: ['mp4', 'webm', 'ogg'],
+    }
+    Vue.component('gl-wrapper', {
+        delimiters: ['${', '}'],
+        props: {y_mo: String, size: Number},
+        data: function () {
+            return {visibility: true,}
+        },
+        computed: {
+            date: function () {
+                return this.y_mo.split('-').join('年') + '月'
+            }
+        },
+        template: '<div class="gl-wrapper"><h1 @click="visibility=!visibility">${date}&nbsp&nbsp&nbsp${size}个项目</h1><transition name="slide-fade"><div v-if="visibility" class="gl-wrappers"><slot></slot></div></transition></div>'
+    })
+
+    Vue.component('gl-container', {
+        delimiters: ['${', '}'],
+        props: {file: Object,},
+        data: function () {
+            return {
+                imgVisibility: false,
+            }
+        },
+        computed: {
+            path: function () {
+                return '{{ url_for('static', filename='users/image/') }}' + this.file.filename
+            },
+            suffix: function () {
+                return this.file.filename.split('.').reverse()[0]
+            },
+        },
+        methods: {
+            switch_viewer_mode: function (file) {
+                vm.preview_mode = true;
+                vm.viewer_file = file;
+            }
+        },
+        template: '<div class="gl-container" @click="switch_viewer_mode(file)" >' +
+            '<img v-show="imgVisibility" @load="imgVisibility=true" :src="path" :title="file.filename" :alt="file.filename" v-if="suffixes.video.indexOf(suffix)==-1"/>' +
+            '<video onmouseleave="this.removeAttribute(\'controls\')" onmouseenter="this.setAttribute(\'controls\',\'1\')" :title="file.filename" :alt="file.filename" height="256" v-if="suffixes.video.indexOf(suffix)!=-1" :src="path"></video>' +
+            '</div>'
+    })
+
+    Vue.component('gl-viewer', {
+        delimiters: ['${', '}'],
+        props: ['filename'],
+        data() {
+            return {innerText: vm.viewer_file.filename}
+        },
+        methods: {
+            rename: function () {
+                let name = vm.viewer_file.filename
+                let new_name = this.$el.innerText.trim();
+                if (name != new_name)
+                    window.location = '/admin/manage/rename/file/?name=' + name + '&new_name=' + new_name;
+                else
+                    vm.preview_mode = false
+            },
+            delete_file: function () {
+                if (confirm("是否要删除" + vm.viewer_file.filename)) {
+                    window.location = '/admin/manage/delete/file/' + vm.viewer_file.filename
+                }
+            }
+        },
+        template: '<div id="gl-viewer" @click="rename"><slot></slot><span v-html="innerText" contenteditable="true" id="gl-viewer-filename" @click.stop="return false;"></span>' +
+            '<div id="gl-viewer-delete"><span @click.stop="delete_file" class="fa-stack fa-lg">' +
+            '  <i class="fa fa-circle fa-stack-2x"></i>' +
+            '  <i class="fa fa-trash fa-stack-1x fa-inverse"></i>' +
+            '</span></div><div>'
+    })
+
+    var vm = new Vue({
+        el: '#gl-vm-det',
+        delimiters: ['${', '}'],
+        data: {
+            files:{{ the_content | safe }},
+            preview_mode: false,
+            viewer_file: {},
+        },
+    })
+
+</script>
