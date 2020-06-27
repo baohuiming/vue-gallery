@@ -1,0 +1,95 @@
+div#gl-vm-det {
+  padding: 0 2.6rem;
+  animation: fadein 0.5s;
+
+  h1 {
+    margin-left: 6px;
+    font-size: 16px;
+    font-weight: lighter;
+    color: #fff;
+    cursor: default;
+    transition: ease-in 50ms;
+    user-select: none;
+
+    &:hover {
+      color: rgb(55, 70, 80);
+    }
+  }
+
+  div.gl-wrappers {
+    display: flex;
+    flex-wrap: wrap;
+
+    div.gl-container {
+      margin: 6px;
+      overflow: hidden;
+      height: 256px;
+
+      img, video {
+        height: 256px;
+        transition: cubic-bezier(0.25, 0.46, 0.45, 0.94) .5s;
+        animation: fadein 0.5s;
+
+        &:hover {
+          transform: scale(1.08);
+          -ms-transform: scale(1.08);
+        }
+      }
+    }
+  }
+
+  #gl-viewer {
+    text-align: center;
+    animation: boost .5s;
+    img, video {
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+    #gl-viewer-filename{
+      padding: 8px 12px;
+      margin: 12px;
+      font-size: 24px;
+      color: #fff;
+    }
+    #gl-viewer-delete{
+      margin: 9px;
+      color: rgb(236,76,78);
+      span{
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+/*点击日期后的折叠展开特效*/
+.slide-fade-enter-active {
+  transition: all .1s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all .1s ease-out;
+}
+
+.slide-fade-enter, .slide-fade-leave-to {
+  opacity: 0;
+}
+
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes boost {
+  from{
+    transform: scale(0.5);
+  }
+  to{
+    transform: scale(1);
+  }
+}
