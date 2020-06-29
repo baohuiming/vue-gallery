@@ -1,3 +1,288 @@
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-transition: all .3s;
+  -moz-transition: all .3s;
+  -ms-transition: all .3s;
+  -o-transition: all .3s;
+  transition: all .3s;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.table-wrapper {
+  margin: 20px 40px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+}
+
+table.fl-table {
+  font-size: 12px;
+  font-weight: normal;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  max-width: 100%;
+  white-space: nowrap;
+  background-color: white;
+}
+
+table.fl-table tr > td, table.fl-table tr > th {
+  text-align: center;
+  height: 35px;
+
+}
+
+table.fl-table td {
+  border: 1px solid #f8f8f8;
+  font-size: 12px;
+  cursor: default;
+}
+
+table.fl-table > tbody > tr > td:hover {
+  box-shadow: 0 0 3px #2196f2 inset;
+}
+
+table.fl-table > thead > tr > th {
+  color: #ffffff;
+  background: #4FC3A1;
+  border: 1px solid #4FC3A1;
+}
+
+
+table.fl-table > thead > tr > th:nth-child(odd) {
+  color: #ffffff;
+  background: #324960;
+  border: 1px solid #324960;
+}
+
+table.fl-table tr:nth-child(even) {
+  background: #F8F8F8;
+}
+
+table.fl-table th:last-child, table.fl-table td:last-child {
+  width: 120px;
+}
+
+button {
+  margin: 0 2px;
+  color: #fff;
+  height: 22px;
+  /*border-radius: 7px;*/
+  box-shadow: none;
+  background-color: #212121;
+  border: 1px #fff solid;
+}
+
+table.inner-table {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border-collapse: collapse;
+}
+
+table.inner-table td {
+  height: 30px;
+  border: 1px #e8e8e8 solid;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: #F8F8F8;
+  margin: 0;
+  padding: 0;
+}
+
+table.inner-table td:hover {
+  box-shadow: 0 0 3px #f28c89 inset;
+}
+
+table.fl-table td.tag_name {
+  width: 100px;
+  font-size: 16px;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+
+table.inner-table td a {
+  color: #212121;
+  text-decoration: none;
+}
+
+.gl-img {
+  vertical-align: top;
+  position: relative;
+  display: inline-block;
+  margin: 0.7rem;
+  box-shadow: 0 5px 10px #434343;
+  padding: 0;
+  font-size: 0;
+  width: 20%;
+  min-width: 20rem;
+  background: #fff;
+}
+
+.gl-img img {
+  background: #f0f0f0;
+  object-fit: cover;
+  width: 100%;
+  max-height: 20rem;
+  cursor: pointer;
+}
+
+.gl-img p {
+  margin: 0;
+  font-size: medium;
+  padding: 0.4rem 1rem;
+  color: #fff;
+  background-color: #313131;
+}
+
+.gl-img i.fa {
+  margin-right: 3px;
+}
+
+.gl-img .edit-btn-container {
+  cursor: default;
+  font-size: inherit;
+  display: none;
+  height: 2rem;
+  line-height: 2rem;
+  width: 100%;
+}
+
+.gl-img .edit-btn {
+  cursor: default;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: center;
+  font-size: 1.2rem;
+  flex: 1;
+  color: #fff;
+}
+
+.gl-img .btn_rename {
+  background-color: #4CAF50;
+}
+
+.gl-img .btn_edit {
+  background-color: #FBC02D;
+}
+
+.gl-img .btn_delete {
+  background-color: #F44336;
+}
+
+.gl-img input {
+  font-size: medium;
+  flex-basis: 70%;
+}
+
+#big {
+  z-index: 999;
+  cursor: pointer;
+}
+
+#bigbox {
+  text-align: center;
+  color: #fff;
+}
+
+#bigbox h2 {
+  cursor: default;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+div#control {
+  padding-left: 1rem;
+  position: relative;
+}
+
+button#upload-button {
+  padding: 0;
+  margin: 0;
+  width: 9rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 2px;
+  background-color: #00BCD4;
+  box-shadow: 0 0 7px #212121;
+  cursor: pointer;
+}
+
+button#upload-button:hover {
+  background-color: #00acc2;
+}
+
+button#upload-button i {
+  margin-right: 4px;
+}
+
+#upload-input {
+  display: none;
+}
+
+div#upload-info {
+  display: none;
+  background-color: #ffffff;
+  margin-top: 0.7rem;
+  border-radius: 4px;
+  padding: 0.7rem;
+  border: 1px #eeeeee solid;
+  width: 35rem;
+  color: #2c3e50;
+}
+
+#upload-info input {
+  width: 30rem;
+  height: 2rem;
+  border: 2px #dce4ec solid;
+  border-radius: 3px;
+  color: #00aaaa;
+  -webkit-transition: all .4s;
+  -moz-transition: all .4s;
+  -ms-transition: all .4s;
+  -o-transition: all .4s;
+  transition: all .4s;
+}
+
+#upload-info input:hover, #upload-info input:focus {
+  border-color: #00aaaa;
+}
+
+#upload-info button {
+  width: 4rem;
+  height: 1.8rem;
+  margin: 1rem 0.4rem 0.4rem 0;
+  border: none;
+  cursor: default;
+  box-shadow: 0 0 3px #212121;
+}
+
+#upload-info #upload-submit {
+  background-color: #5acf5f;
+}
+
+#upload-info #upload-cancel {
+  background-color: #FF5252;
+}
+
+#upload-info #upload-submit:hover {
+  background-color: #4aab4e;
+}
+
+#upload-info #upload-cancel:hover {
+  background-color: #e44a4a;
+}
+
 div#gl-vm-det {
   padding: 0 2.6rem;
   animation: fadein 0.5s;
@@ -10,6 +295,8 @@ div#gl-vm-det {
     cursor: default;
     transition: ease-in 50ms;
     user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
 
     &:hover {
       color: rgb(55, 70, 80);
@@ -41,24 +328,132 @@ div#gl-vm-det {
   #gl-viewer {
     text-align: center;
     animation: boost .5s;
+
     img, video {
       max-width: 80vw;
       max-height: 80vh;
     }
-    #gl-viewer-filename{
+
+    #gl-viewer-filename {
       padding: 8px 12px;
       margin: 12px;
       font-size: 24px;
       color: #fff;
     }
-    #gl-viewer-delete{
+
+    #gl-viewer-delete {
       margin: 9px;
-      color: rgb(236,76,78);
-      span{
+      color: rgb(236, 76, 78);
+
+      span {
         cursor: pointer;
       }
     }
   }
+
+  div#gl-add-file {
+    margin-left: 6px;
+    background: url("/static/svg/add_file.svg") no-repeat center center;
+    width: 220px;
+    height: 128px;
+    border: #212121 2px dashed;
+
+    &:hover {
+      background-color: rgba(0, 161, 185, 0.58);
+    }
+  }
+
+  #gl-file-upload {
+    div.gl-wrappers {
+      display: block;
+    }
+
+    table.gl-table {
+      margin: 8px 0 0 6px;
+      background-color: #fff;
+      color: rgb(147, 147, 147);
+      text-align: left;
+      padding: 20px;
+      border: rgb(235, 235, 235) 1px solid;
+      border-radius: 2px;
+      border-spacing: 0;
+
+      td, tr, th {
+        min-width: 180px;
+        height: 36px;
+        padding: 12px;
+        border-bottom: rgb(235, 235, 235) 1px solid;
+      }
+
+      &:hover {
+        box-shadow: 0 10px 50px rgba(33, 33, 33, 0.4);
+      }
+
+      tr:hover {
+        background-color: rgba(0, 161, 185, 0.16);
+      }
+
+      a.gl-table-a {
+        display: inline-block;
+        text-align: center;
+        color: #fff;
+        padding: 6px;
+        width: 100px;
+        cursor: pointer;
+        background-color: #00BCD4;
+
+        i {
+          margin-right: 4px;
+        }
+
+        &:hover {
+          background-color: rgba(0, 188, 212, 0.7);
+        }
+      }
+
+      a.gl-table-a-rm {
+        background-color: #dc4040;
+
+        &:hover {
+          background-color: rgba(220, 64, 64, 0.7);
+        }
+      }
+    }
+  }
+
+  .gl-box {
+    margin: 3px 0 0 6px;
+    border-radius: 5px;
+    width: 200px;
+    height: 50px;
+
+    .gl-box-text {
+      float: right;
+      display: inline-block;
+      font-size: 16px;
+      margin-right: 60px;
+      margin-top: 12px;
+      color: rgba(53, 86, 105, 1);
+      cursor: default;
+    }
+  }
+
+  .gl-box-blue {
+    background-color: rgb(153, 204, 255);
+    border: rgb(0, 51, 102) 2px solid;
+  }
+
+  .gl-box-green {
+    background-color: rgb(204, 255, 204);
+    border: rgb(51, 153, 51) 2px solid;
+
+  }
+
+  .gl-box-red {
+    background-color: rgb(255, 153, 102);
+    border: rgb(255, 102, 102) 2px solid;
+  }
+
 }
 
 /*点击日期后的折叠展开特效*/
@@ -74,7 +469,6 @@ div#gl-vm-det {
   opacity: 0;
 }
 
-
 @keyframes fadein {
   from {
     opacity: 0;
@@ -85,11 +479,79 @@ div#gl-vm-det {
     transform: translateY(0);
   }
 }
+
 @keyframes boost {
-  from{
+  from {
     transform: scale(0.5);
   }
-  to{
+  to {
     transform: scale(1);
+  }
+}
+
+.gl-box-svg {
+  * {
+    transition: all 1s;
+    -moz-transition: all 1s;
+    -o-transition: all 1s;
+  }
+
+  circle {
+    animation: rotate 2s linear infinite;
+    transform-origin: 25px 23px;
+    stroke-dasharray: 20;
+    stroke-dashoffset: 0;
+    stroke: rgb(6, 34, 69);
+    fill: none;
+  }
+
+  polyline {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 4;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40; //从40->0
+  }
+}
+
+.gl-box-svg-tick {
+  circle {
+    animation: none;
+    stroke-dasharray: 0;
+    stroke-dashoffset: 0;
+    fill: rgb(9, 215, 20);
+    stroke: rgb(9, 215, 20);
+  }
+
+  polyline {
+    stroke-dashoffset: 0; //从40->0
+  }
+}
+
+.gl-box-svg-err {
+  circle {
+    animation: none;
+    stroke-dasharray: 0;
+    stroke-dashoffset: 0;
+    fill: rgb(232, 60, 75);
+    stroke: rgb(232, 60, 75);
+  }
+
+  polyline {
+    stroke-width: 5;
+    stroke-dasharray: 18px, 4px;
+    stroke-dashoffset: 0; //从40->0
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
