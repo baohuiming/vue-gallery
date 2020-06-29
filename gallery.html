@@ -1,9 +1,28 @@
+<!--TODO:视图大小切换-->
 <script src="{{ url_for('static',filename='js/vue.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/axios.min.js') }}"></script>
 <div id="gl-vm-det">
-    <gl-wrapper v-show="!preview_mode" v-for="y_mo in Object.keys(files).sort().reverse()" :y_mo="y_mo"
-                :size="files[y_mo].length">
-        <gl-container v-for="y_mo_file in files[y_mo]" :file="y_mo_file"></gl-container>
+
+    <!-- 上传文件部分 -->
+    <gl-wrapper id="gl-file-upload" :y_mo="'上传文件'" :size="0">
+        <div title="点击或拖拽以上传文件" @click="vm.$refs.glFileUploadInput.click()" id="gl-add-file"></div>
+        <input ref="glFileUploadInput" id="gl-file-upload-input" multiple type="file" v-show="0"
+               @change="inputFile($event)">
+        <gl-box v-if="box_status"></gl-box>
+        <gl-table v-if="filelist.length"></gl-table>
     </gl-wrapper>
+
+    <!-- wrapper表示每个月，container表示每张图片 -->
+    <!-- files = {
+            '2020-1':[{},{},],
+            '2019-12':[{},{},],
+            } -->
+    <gl-wrapper v-for="key in Object.keys(files).sort().reverse()" :y_mo="key"
+                :size="files[key].length" v-show="!preview_mode">
+        <gl-container v-for="y_mo_file in files[key]" :file="y_mo_file"></gl-container>
+    </gl-wrapper>
+
+    <!-- 预览窗口部分 -->
     <gl-viewer v-if="preview_mode">
         <gl-container :file="vm.viewer_file"></gl-container>
     </gl-viewer>
@@ -15,12 +34,16 @@
             }*/
     /*去除末位空格*/
     String.prototype.trim = function () {
-        return this.replace(/^\s+|\s+$/g, '');
+        return this.replace(/^\s+|\s+$/g, '')
     }
 
-    const suffixes = {
+    let filelist = [];
+    let files = {{ the_content | safe }};
+
+    const extensions = {
         video: ['mp4', 'webm', 'ogg'],
     }
+
     Vue.component('gl-wrapper', {
         delimiters: ['${', '}'],
         props: {y_mo: String, size: Number},
@@ -29,10 +52,22 @@
         },
         computed: {
             date: function () {
-                return this.y_mo.split('-').join('年') + '月'
-            }
+                if (this.y_mo.indexOf('-') != -1)
+                    return this.y_mo.split('-').join('年') + '月'
+                else
+                    return this.y_mo
+            },
         },
-        template: '<div class="gl-wrapper"><h1 @click="visibility=!visibility">${date}&nbsp&nbsp&nbsp${size}个项目</h1><transition name="slide-fade"><div v-if="visibility" class="gl-wrappers"><slot></slot></div></transition></div>'
+        template:
+            '<div class="gl-wrapper">' +
+            '<h1 @click="visibility=!visibility">' +
+            '<span>${date}</span><span v-if="size">&nbsp&nbsp&nbsp${size}个项目</span>' +
+            '</h1>' +
+            '<transition name="slide-fade">' +
+            '<div v-if="visibility" class="gl-wrappers">' +
+            '<slot></slot>' +
+            '</div>' +
+            '</transition></div>'
     })
 
     Vue.component('gl-container', {
@@ -45,10 +80,10 @@
         },
         computed: {
             path: function () {
-                return '{{ url_for('static', filename='users/image/') }}' + this.file.filename
+                return '{{ url_for('static', filename='users/uploads/') }}' + this.file.filename
             },
-            suffix: function () {
-                return this.file.filename.split('.').reverse()[0]
+            extension: function () {
+                return this.file.filename.split('.').pop().toLocaleLowerCase()
             },
         },
         methods: {
@@ -58,8 +93,8 @@
             }
         },
         template: '<div class="gl-container" @click="switch_viewer_mode(file)" >' +
-            '<img v-show="imgVisibility" @load="imgVisibility=true" :src="path" :title="file.filename" :alt="file.filename" v-if="suffixes.video.indexOf(suffix)==-1"/>' +
-            '<video onmouseleave="this.removeAttribute(\'controls\')" onmouseenter="this.setAttribute(\'controls\',\'1\')" :title="file.filename" :alt="file.filename" height="256" v-if="suffixes.video.indexOf(suffix)!=-1" :src="path"></video>' +
+            '<img onerror="this.src=\'{{ url_for('static',filename='image/unknow.svg') }}\'" v-show="imgVisibility" @load="imgVisibility=true" :src="path" :title="file.filename" :alt="file.filename" v-if="extensions.video.indexOf(extension)==-1"/>' +
+            '<video onmouseleave="this.removeAttribute(\'controls\')" onmouseenter="this.setAttribute(\'controls\',\'1\')" :title="file.filename" :alt="file.filename" height="256" v-if="extensions.video.indexOf(extension)!=-1" :src="path"></video>' +
             '</div>'
     })
 
@@ -91,13 +126,143 @@
             '</span></div><div>'
     })
 
+    Vue.component('gl-table', {
+        delimiters: ['${', '}'],
+        methods: {
+            sumSize() {
+                //文件大小求和
+                //alert(filelist.map(row => row.filesize).reduce())
+                return vm.filelist.map(row => row.filesize).reduce((x, y) => (parseFloat(x) + parseFloat(y)).toFixed(2))
+            },
+        },
+        template: '<table class="gl-table">' +
+            '<thead>' +
+            '<th>文件名</th><th>文件类型</th><th>文件大小(MB)</th><th>操作</th>' +
+            '</thead>' +
+            '<tbody>' +
+            '<tr v-for="(file,idx) in filelist">' +
+            '<td v-html="file[\'filename\']"></td>' +
+            '<td v-html="file[\'filetype\']"></td>' +
+            '<td v-html="file[\'filesize\']"></td>' +
+            '<td><a v-show="Math.abs(vm.box_status-1.5)-0.5" class="gl-table-a-rm gl-table-a" @click="vm.filelist.splice(idx,1)"><i class="fa fa-trash"></i>删除</a></td></tr>' +
+            '<tr>' +
+            '<td>共${vm.filelist.length}项</td><td></td><td>${sumSize()}</td><td><a v-show="Math.abs(vm.box_status-1.5)-0.5" class="gl-table-a" @click="vm.submit()"><i class="fa fa-upload"></i>上传</a></td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>',
+    })
+
+    Vue.component('gl-box', {
+        delimiters: ['${', '}'],
+        props: {gl_box_status: Number},
+        computed: {
+            color: function () {
+                return {1: 'gl-box-blue', 2: 'gl-box-green', 3: 'gl-box-red'}[vm.box_status]
+            },
+            text: function () {
+                return {1: '正在操作', 2: '操作成功', 3: '操作失败'}[vm.box_status]
+            },
+            tick: function () {
+                return {1: '', 2: 'gl-box-svg-tick', 3: 'gl-box-svg-err'}[vm.box_status]
+            },
+            point: function () {
+                return {1: '', 2: '13,22 23,32 36,14', 3: '25,9 25,35'}[vm.box_status]
+            }
+        },
+        template:
+            '<div v-bind:class="this.color+\' gl-box\'">' +
+            '<svg width="50" height="46" xmlns="http://www.w3.org/2000/svg" version="1.1" v-bind:class="[tick, \'gl-box-svg\']">' +
+            '<circle cx="25" cy="23" r="18" stroke-width="3"></circle>' +
+            '<polyline :points="point"/>' +
+            '</svg>' +
+            '<div class="gl-box-text" v-html="this.text"></div>' +
+            '</div>',
+    })
+
     var vm = new Vue({
         el: '#gl-vm-det',
         delimiters: ['${', '}'],
         data: {
-            files:{{ the_content | safe }},
+            files: files,
+            filelist: filelist,
+            files_upload: [],
+            files_upload_true: [],//这个是真正要上传的文件列表
             preview_mode: false,
             viewer_file: {},
+            box_status: 0,
+        },
+        mounted() {
+            let self = this
+
+            /*临时文件
+            this.filelist.push({
+                filename: 'file',
+                filesize: 1.6,
+                filetype: 'file'
+            })*/
+
+            function handleFileSelect(evt) {
+                evt.stopPropagation()
+                evt.preventDefault()
+                self.files_upload = evt.dataTransfer.files
+                self.files_upload_true.push(self.files_upload)
+                self.fileChange()
+            }
+
+            function handleDragOver(evt) {
+                evt.stopPropagation()
+                evt.preventDefault()
+                evt.dataTransfer.dropEffect = 'copy'
+            }
+
+            var dropZone = document.getElementById('gl-add-file')
+            dropZone.addEventListener('dragover', handleDragOver, false)
+            dropZone.addEventListener('drop', handleFileSelect, false)
+        },
+        methods: {
+            inputFile(evt) {
+                this.files_upload = evt.target.files
+                this.files_upload_true.push(this.files_upload)
+                this.fileChange()
+            },
+            fileChange() {
+                for (let file of this.files_upload) {
+                    vm.filelist.push({
+                        filename: file.name,
+                        filesize: (file.size / 1024 / 1024).toFixed(2),
+                        filetype: file.type
+                    })
+                    //console.log(vm.filelist)
+                }
+            },
+            submit() {
+                //console.log(vm.files_upload_true)
+                vm.box_status = 1;
+                let form = new FormData;
+                for (let flist of vm.files_upload_true) {
+                    for (let f of flist) {
+                        form.append('files[]', f)
+                    }
+                }
+                setTimeout(function () {
+                    axios.post('{{ url_for('admin.file_upload') }}', form).then(
+                        response => {
+                            if (response.data.MessageType == 'success') {
+                                vm.box_status = 2;
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 2000)
+                            } else {
+                                vm.box_status = 3;
+                            }
+                        }
+                    ).catch(error =>
+                        (vm.box_status = 3)
+                    )
+                }, 1000)
+
+
+            }
         },
     })
 
